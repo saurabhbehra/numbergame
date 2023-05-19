@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 
 const Table = () => {
-  const [username, setUsername] = useState('');
-  const [sessionId, setSessionId] = useState('');
-  const [startTime, setStartTime] = useState(0);
-  const [leftTableNumbers, setLeftTableNumbers] = useState([]);
-  const [rightTableNumbers, setRightTableNumbers] = useState([]);
-  const [goalAchieved, setGoalAchieved] = useState(false);
+  const [username, setUsername] = useState('')
+  const [sessionId, setSessionId] = useState('')
+  const [startTime, setStartTime] = useState(0)
+  const [leftTableNumbers, setLeftTableNumbers] = useState([])
+  const [rightTableNumbers, setRightTableNumbers] = useState([])
+  const [goalAchieved, setGoalAchieved] = useState(false)
 
 
   useEffect(() => {
@@ -16,9 +16,9 @@ const Table = () => {
     const interval = setInterval(() => {
         if(leftTableNumbers.length!==0)
         generateRandomNumbers();
-    }, 400);
-    return () => clearInterval(interval);
-  }, [leftTableNumbers]);
+    }, 400)
+    return () => clearInterval(interval)
+  }, [leftTableNumbers])
 
 
   useEffect(()=>{
@@ -57,22 +57,22 @@ const Table = () => {
   const startGame = async () => {
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/start`, { username });
-      const { sessionId, startTime, numbers } = res.data;
-      setSessionId(sessionId);
-      setStartTime(startTime);
-      setLeftTableNumbers(numbers);
+      const { sessionId, startTime, numbers } = res.data
+      setSessionId(sessionId)
+      setStartTime(startTime)
+      setLeftTableNumbers(numbers)
     } catch (error) {
-      console.error('Error starting the game:', error);
+      console.error('Error starting the game:', error)
     }
-  };
+  }
 
   const handleClickLeftTable = (number) => {
-    if (rightTableNumbers.length >= 8 || goalAchieved) return;
-    setRightTableNumbers((prevNumbers) => [...prevNumbers, number]);
+    if (rightTableNumbers.length >= 8 || goalAchieved) return
+    setRightTableNumbers((prevNumbers) => [...prevNumbers, number])
     setLeftTableNumbers((prevNumbers) =>
       prevNumbers.filter((n) => n !== number)
-    );
-  };
+    )
+  }
 
   const handleFinishGame = async () => {
     try {
@@ -81,8 +81,8 @@ const Table = () => {
         timeTaken: Date.now() - startTime,
         numbers: rightTableNumbers
       });
-      const { goalAchieved } = res.data;
-      setGoalAchieved(goalAchieved);
+      const { goalAchieved } = res.data
+      setGoalAchieved(goalAchieved)
       return goalAchieved
     } catch (error) {
       console.error('Error finishing the game:', error);
@@ -92,10 +92,10 @@ const Table = () => {
   const generateRandomNumbers = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/random-numbers/${rightTableNumbers.length>0?rightTableNumbers:999}`);
-      const { numbers } = res.data;
-      setLeftTableNumbers(numbers);
+      const { numbers } = res.data
+      setLeftTableNumbers(numbers)
     } catch (error) {
-      console.error('Error generating random numbers:', error);
+      console.error('Error generating random numbers:', error)
     }
   };
 
